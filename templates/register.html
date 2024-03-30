@@ -3,8 +3,10 @@
 
     <form method="POST" action="">
         {{ form.hidden_tag() }}
-        {{ form.username }}
-        {{ form.password }}
+        {{ form.username }}<br>
+        {{ form.password }}<br>
+        {{ form.birthday.label }}
+        {{ form.birthday(class='datepicker') }} <br>
         {{ form.submit }}
     </form>
 
