@@ -1,12 +1,13 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, DateField
+from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField
 from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
 from flask_bcrypt import Bcrypt
 from datetime import datetime
-from sqlalchemy.orm import DeclarativeBase
+import flask_login
+from sqlalchemy.orm import backref
 
 app = Flask(__name__)
 
@@ -34,6 +35,13 @@ class Follow(db.Model):
                             primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.now())
 
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(1000), nullable=False)
+    receiver = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    sender = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.now())
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
@@ -49,14 +57,10 @@ class User(db.Model, UserMixin):
                               backref=db.backref('followed', lazy='joined'),
                               lazy='dynamic',
                               cascade='all, delete-orphan')
+    postsender = db.relationship("Post", backref=backref("postsender", uselist=False), foreign_keys=[Post.sender], lazy=True)
 
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(1000), nullable=False)
-    receiver = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    sender = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.now())
 
+    
 
 
 class RegisterForm(FlaskForm):
@@ -85,6 +89,11 @@ class LoginForm(FlaskForm):
 
     submit = SubmitField('Login')
 
+class PostForm(FlaskForm):
+    body = TextAreaField(validators=[
+                           InputRequired(), Length(min=3, max=2000)], render_kw={"placeholder": "Wish them a Happy Birthday!!"})
+    submit = SubmitField('Send')
+
 
 @app.route('/')
 def home():
@@ -103,10 +112,24 @@ def login():
     return render_template('login.html', form=form)
 
 
-@app.route('/<username>')
+@app.route('/<username>', methods=['GET', 'POST'])
 def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template('profile.html', user=user)
+    form = PostForm()
+    print(flask_login.current_user.id)
+    wishes = Post.query.filter_by(receiver=user.id)
+
+    if form.validate_on_submit():
+        newsender = flask_login.current_user
+        new_post = Post(sender=newsender.id, receiver=user.id, body=form.body.data, timestamp=datetime.now())
+        db.session.add(new_post)
+        db.session.commit()
+        print(newsender.id)
+        print(new_post)
+        print(form.body.data)
+        return redirect(url_for('profile', username=user.username))
+
+    return render_template('profile.html', user=user, form=form, wishes=wishes)
 
 
 @app.route('/logout', methods=['GET', 'POST'])
