@@ -8,11 +8,15 @@ from flask_bcrypt import Bcrypt
 from datetime import datetime
 import flask_login
 from sqlalchemy.orm import backref
+from dateutil.relativedelta import relativedelta
+from datetime import date
+import os
 
 app = Flask(__name__)
 
 
 with app.app_context():
+    app.config['UPLOAD_FOLDER'] = 'static/profile-pics'  # Folder to store uploaded images
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
     app.config['SECRET_KEY'] = 'thisisasecretkey'
     db = SQLAlchemy(app)
@@ -46,7 +50,10 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
+    first_name = db.Column(db.String(20), nullable=False)
+    last_name = db.Column(db.String(80), nullable=True)
     birthday = db.Column(db.Date, nullable=False)
+    profile_pic = db.Column(db.LargeBinary, default='/static/profile-pics/default.jpg')
     followed = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
                                backref=db.backref('follower', lazy='joined'),
@@ -69,6 +76,8 @@ class RegisterForm(FlaskForm):
 
     password = PasswordField(validators=[
                              InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+    first_name = StringField(validators=[
+                           InputRequired(), Length(min=2, max=20)], render_kw={"placeholder": "First Name"})
     birthday = DateField('Birthday', format='%Y-%m-%d', validators=[DataRequired()])
     submit = SubmitField('Register')
 
@@ -97,7 +106,11 @@ class PostForm(FlaskForm):
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    todaybday = User.query.filter_by(birthday=date.today()).all()
+    today = date.today()
+    three_months_later = today + relativedelta(months=3)
+    upcoming = User.query.filter(User.birthday >= date.today(), User.birthday <= three_months_later).all()
+    return render_template('home.html', today=todaybday, upcoming=upcoming)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -129,6 +142,15 @@ def profile(username):
         print(form.body.data)
         return redirect(url_for('profile', username=user.username))
 
+    if request.method == 'POST':
+        # Handle file upload
+        if 'profile_pic' in request.files:
+            profile_pic = request.files['profile_pic']
+            if profile_pic.filename:
+                filename = secure_filename(profile_pic.filename)
+                profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                # Save 'filename' to your database for the user's profile
+
     return render_template('profile.html', user=user, form=form, wishes=wishes)
 
 
@@ -146,7 +168,7 @@ def register():
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data)
         print(form.birthday.data)
-        new_user = User(username=form.username.data, password=hashed_password, birthday=form.birthday.data)
+        new_user = User(username=form.username.data, password=hashed_password, birthday=form.birthday.data, first_name=form.first_name.data)
         db.session.add(new_user)
         db.session.commit()
         print('success')
