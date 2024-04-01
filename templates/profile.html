@@ -5,6 +5,7 @@
 <input type="file" name="profile-pic" />
 <h1>{{ user.birthday }}</h1>
 <h1>{{ user.username }}</h1>
+<input type="button" action="{{ url_for('follow', username=user.username) }}">
 <form action="" method="POST">
   {{ form.hidden_tag() }} {{ form.body }} {{ form.submit }}
 </form>

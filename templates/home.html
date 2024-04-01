@@ -12,10 +12,12 @@
 
 <h2>Upcoming Birthdays</h2>
 {% for u in upcoming %}
-<a href="{{ url_for('profile', username=u.username) }}"
-<div>
+<a href="{{ url_for('profile', username=u.username) }}">
+    <div>
     {{ u.username }}<br>
     {{ u.birthday }}
 </div>
+</a>
+
 {% endfor %}
 {% endblock %}

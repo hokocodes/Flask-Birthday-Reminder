@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, flash, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
@@ -65,6 +65,30 @@ class User(db.Model, UserMixin):
                               lazy='dynamic',
                               cascade='all, delete-orphan')
     postsender = db.relationship("Post", backref=backref("postsender", uselist=False), foreign_keys=[Post.sender], lazy=True)
+
+    def is_following(self, user):
+        if user.id is None:
+            return False
+        return self.followed.filter_by(
+            followed_id=user.id).first() is not None
+
+    def is_followed_by(self, user):
+        if user.id is None:
+            return False
+        return self.followers.filter_by(
+            follower_id=user.id).first() is not None
+    
+    def follow(self, user):
+        if not self.is_following(user):
+            f = Follow(follower_id=self, followed_id=user)
+            db.session.add(f)
+            return True
+
+    def unfollow(self, user):
+        f = Follow.filter_by(followed_id=user.id).first()
+        if f:
+            db.session.delete(f)
+            return True
 
 
     
@@ -177,7 +201,36 @@ def register():
 
     return render_template('register.html', form=form)
 
+@app.route('/follow/<username>')
+@login_required
+def follow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('Invalid user.')
+        return redirect(url_for('.index'))
+    if current_user.is_following(user):
+        flash('You are already following %s.' % user.username)
+        return redirect(url_for('.user', username=username))
+    current_user.follow(user)
+    db.session.commit()
+    flash('You are now following %s.' % user.username)
+    return redirect(url_for('.user', username=username))
 
+
+@app.route('/unfollow/<username>')
+@login_required
+def unfollow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('Invalid user.')
+        return redirect(url_for('home'))
+    if not current_user.is_following(user):
+        flash('You are not following %s.' % user.username)
+        return redirect(url_for('profile', username=username))
+    current_user.unfollow(user)
+    db.session.commit()
+    flash('You are no longer following %s.' % user.username)
+    return redirect(url_for('profile', username=username))
 
 if __name__ == "__main__":
     app.run(debug=True)
