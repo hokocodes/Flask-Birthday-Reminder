@@ -1,11 +1,20 @@
 {% extends 'base.html' %} {% block content %}
 
 <h1>Hello, {{ current_user.username }}!</h1>
-<img id="profile-img" src="{{ user.profile_pic }}" onclick="upload()" />
-<input type="file" name="profile-pic" />
+<img id="profile-img" src="/static/profile-pics/{{user.profile_pic}}" />
+<form
+  action="{{ url_for('profile', username=user.username) }}"
+  enctype="multipart/form-data"
+  method="POST" 
+  id="profile-pic-form"
+>
+  <input type="file" name="profile-pic" id="profile-pic"/>
+  <input type="submit" value="Save" id="pic-submit">
+</form>
+
 <h1>{{ user.birthday }}</h1>
 <h1>{{ user.username }}</h1>
-<input type="button" action="{{ url_for('follow', username=user.username) }}">
+<input type="button" action="{{ url_for('follow', username=user.username) }}" />
 <form action="" method="POST">
   {{ form.hidden_tag() }} {{ form.body }} {{ form.submit }}
 </form>
@@ -18,9 +27,15 @@
 {% endfor %}
 <script>
   $(document).ready(function () {
-    function upload() {
-      $("#profile-img").click();
-    }
+    $('#profile-img').on('click', function() {
+      $("#profile-pic").click();
+    });
+
+    $('#profile-pic').on('change', function() {
+      $("#profile-pic-form").submit();
+    });
+
+    console.log('{{ user.profile_pic}}');
   });
 </script>
 {% endblock %}

@@ -15,7 +15,7 @@
 <a href="{{ url_for('profile', username=u.username) }}">
     <div>
     {{ u.username }}<br>
-    {{ u.birthday }}
+    {{ u.birthday.strftime('%B %d') }}
 </div>
 </a>
 
