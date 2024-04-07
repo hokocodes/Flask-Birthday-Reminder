@@ -207,9 +207,7 @@ def login():
 @app.route("/<username>", methods=["GET", "POST"])
 def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
-    print(user.profile_pic)
     form = PostForm()
-    print(flask_login.current_user.id)
     wishes = Post.query.filter_by(receiver=user.id)
 
     if request.method == "POST":

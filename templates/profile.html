@@ -1,41 +1,54 @@
 {% extends 'base.html' %} {% block content %}
+<section>
+  <div class="user">
+    
+    <img id="profile-img" src="/static/profile-pics/{{user.profile_pic}}" />
+    <form
+      action="{{ url_for('profile', username=user.username) }}"
+      enctype="multipart/form-data"
+      method="POST"
+      id="profile-pic-form"
+    >
+      <input type="file" name="profile-pic" id="profile-pic" />
+      <input type="submit" value="Save" id="pic-submit" />
+    </form>
 
-<h1>Hello, {{ current_user.username }}!</h1>
-<img id="profile-img" src="/static/profile-pics/{{user.profile_pic}}" />
-<form
-  action="{{ url_for('profile', username=user.username) }}"
-  enctype="multipart/form-data"
-  method="POST" 
-  id="profile-pic-form"
->
-  <input type="file" name="profile-pic" id="profile-pic"/>
-  <input type="submit" value="Save" id="pic-submit">
-</form>
+    <div class="userinfo">
+      <h1>{{ user.birthday }}</h1>
+      <h1>{{ user.username }}</h1>
+      <input
+        type="button"
+        action="{{ url_for('follow', username=user.username) }}"
+        value="Follow"
+      />
+    </div>
+  </div>
 
-<h1>{{ user.birthday }}</h1>
-<h1>{{ user.username }}</h1>
-<input type="button" action="{{ url_for('follow', username=user.username) }}" />
-<form action="" method="POST">
-  {{ form.hidden_tag() }} {{ form.body }} {{ form.submit }}
-</form>
-{% for w in wishes %}
-<div>
-  <h6>{{ w.postsender.username }}</h6>
-  <p>{{ w.body }}</p>
-  <info>{{ w.timestamp }}</info>
-</div>
-{% endfor %}
+  <div class="wishes">
+    <form action="" method="POST">
+      {{ form.hidden_tag() }} {{ form.body }} {{ form.submit }}
+    </form>
+    {% for w in wishes %}
+    <div>
+      <h6>{{ w.postsender.username }}</h6>
+      <p>{{ w.body }}</p>
+      <info>{{ w.timestamp }}</info>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
 <script>
   $(document).ready(function () {
-    $('#profile-img').on('click', function() {
+    $("#profile-img").on("click", function () {
       $("#profile-pic").click();
     });
 
-    $('#profile-pic').on('change', function() {
+    $("#profile-pic").on("change", function () {
       $("#profile-pic-form").submit();
     });
 
-    console.log('{{ user.profile_pic}}');
+    console.log("{{ user.profile_pic}}");
   });
 </script>
 {% endblock %}

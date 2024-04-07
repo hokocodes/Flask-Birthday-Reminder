@@ -1,7 +1,8 @@
 {% extends 'base.html' %} {% block content %}
-    <h1>Register Page</h1>
+<section>
+        <h1>Register</h1>
 
-    <form method="POST" action="">
+    <form class="auth register" method="POST" action="">
         {{ form.hidden_tag() }}
         {{ form.username }}<br>
         {{ form.password }}<br>
@@ -12,4 +13,6 @@
     </form>
 
     <a href="{{ url_for('login') }}">Already have an account? Log In</a>
+</section>
+
 {% endblock %}

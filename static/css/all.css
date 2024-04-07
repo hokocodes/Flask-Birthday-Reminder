@@ -9,3 +9,104 @@
 #profile-pic-form input {
     display: none;
 }
+
+html {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    margin: 0;
+}
+
+ul {
+    list-style-type: none;
+    display: inline-flex;
+}
+
+nav a {
+    display: inline-flex;
+    padding: 10px;
+}
+
+.logo {
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    position: absolute;
+    right: 0px;
+    margin: 20px;
+}
+
+a:link { 
+    text-decoration: none; 
+    color: lightblue;
+  } 
+  a:visited { 
+    text-decoration: none; 
+    color:aquamarine;
+  } 
+  a:hover { 
+    text-decoration: none; 
+    color: pink;
+  } 
+  a:active { 
+    text-decoration: none; 
+    color:orange;
+  }
+  
+nav {
+    display: inline-flex;
+    position: relative;
+    width: 100%;
+}
+
+nav h1 {
+    padding-left: 30px;
+}
+
+.upcoming {
+    background-color: yellow;
+    padding: 30px;
+    border-radius: 10%;
+    width: 250px;
+}
+
+section {
+    margin-left: 15%;
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+.user {
+    display: flex;
+}
+
+.userinfo {
+    margin: 30px;
+}
+
+.wishes {
+    display: flex;
+    justify-content: center;
+}
+
+textarea {
+    border: 0;
+    padding: 20px;
+    margin: 20px;
+}
+
+input {
+    background-color: pink;
+    color: blueviolet;
+    font-weight: 100;
+    padding: 20px;
+    border: 0;
+    border-radius: 5%;
+}
+
+.wishes form {
+    display: grid;
+}
+
+.auth input {
+    margin: 10px;
+}

@@ -5,18 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Birthday Wishes</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/all.css') }}">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/all.css') }}"
+    />
   </head>
   <body>
-    <h1>The Birthday Base</h1>
-    <a href="{{ url_for('home')}}">Home</a><br>
-    
-    {% if current_user.is_authenticated %}
-    <a href="{{url_for('logout')}}">Logout</a>
-    {% else %}
-    <a href="{{ url_for('login') }}">Login Page</a><br />
-    <a href="{{ url_for('register') }}">Register Page</a><br />
-    {% endif %}
+    <nav>
+      <h1>The Birthday Base</h1>
+      <ul>
+        <li><a href="{{ url_for('home')}}">Home</a></li>
+
+        {% if current_user.is_authenticated %}
+        <li><a href="{{url_for('logout')}}">Logout</a></li>
+        {% else %}
+        <li><a href="{{ url_for('login') }}">Login Page</a></li>
+        <li><a href="{{ url_for('register') }}">Register Page</a></li>
+        {% endif %}
+      </ul>
+      <img class="logo" src="{{ url_for('static', filename='images/bday.jpg') }}">
+    </nav>
+
     {% block content %} {% endblock %}
+    
   </body>
 </html>

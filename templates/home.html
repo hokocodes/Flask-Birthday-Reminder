@@ -1,23 +1,21 @@
 {% extends 'base.html' %} {% block content %}
+<section>
+  {% if today|length >= 1 %}
+  <h1>It's someone's birthday today!</h1>
+  {% for t in today %}
+  <p>People with birthdays today...</p>
+  {{t.username}} {% endfor %} {% else %}
+  <p>Bummer, there's no birthdays today...</p>
+  {% endif %}
 
-{% if today|length >= 1 %}
-<h1>It's someone's birthday today!</h1>
-{% for t in today %}
-<p>People with birthdays today...</p>
-{{t.username}}
-{% endfor %}
-{% else %}
-<p>Bummer, there's no birthdays today...</p>
-{% endif %}
+  <h2>Upcoming Birthdays</h2>
+  {% for u in upcoming %}
+  <div class="upcoming">
+    <a href="{{ url_for('profile', username=u.username) }}">
+      {{ u.username }}<br />
+      {{ u.birthday.strftime('%B %d') }}
+    </a>
+  </div>
+</section>
 
-<h2>Upcoming Birthdays</h2>
-{% for u in upcoming %}
-<a href="{{ url_for('profile', username=u.username) }}">
-    <div>
-    {{ u.username }}<br>
-    {{ u.birthday.strftime('%B %d') }}
-</div>
-</a>
-
-{% endfor %}
-{% endblock %}
+{% endfor %} {% endblock %}
