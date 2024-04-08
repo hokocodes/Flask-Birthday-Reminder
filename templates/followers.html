@@ -4,9 +4,9 @@
         {{ user.username }}'s Followers
     </h1>
     {% for f in followers %}
-    <a href="{{ url_for('profile', username=f.followers.username) }}">
-        {{ f.follower_id.username }}
-      </a>
+    <a href="{{ url_for('profile', username=f.follower.username) }}">
+        {{ f.follower.username }}
+      </a><br>
     {% endfor %}
 </section>
 {% endblock %}

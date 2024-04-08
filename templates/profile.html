@@ -16,8 +16,8 @@
     <div class="userinfo">
       <h1>{{ user.birthday }}</h1>
       <h1>{{ user.username }}</h1>
-      <p>{{ f.follower_id }}</p>
-    
+
+      {% if current_user.is_authenticated %}
       {% if current_user.is_following(user) %}
       <form action="{{ url_for('unfollow', username=user.username) }}" method="post">
         <input type="submit" value="Unfollow">
@@ -26,6 +26,7 @@
       <form action="{{ url_for('follow', username=user.username) }}" method="post">
         <input type="submit" value="Follow">
       </form>
+      {% endif %}
       {% endif %}
     </div>
 

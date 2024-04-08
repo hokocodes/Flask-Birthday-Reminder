@@ -5,8 +5,8 @@
     </h1>
     {% for f in following %}
     <a href="{{ url_for('profile', username=f.followed.username) }}">
-        {{ f.followed_id.username }}
-      </a>
+        {{ f.followed.username }}
+      </a><br>
     {% endfor %}
 </section>
 {% endblock %}

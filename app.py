@@ -209,7 +209,8 @@ def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
     form = PostForm()
     wishes = Post.query.filter_by(receiver=user.id)
-    f = Follow.query.filter_by(follower_id=current_user.id)
+    current_user = flask_login.current_user
+
     
 
     if request.method == "POST":
@@ -218,28 +219,26 @@ def profile(username):
         if profile_pic:
             filename = secure_filename(profile_pic.filename)
             pic_name = str(uuid.uuid1()) + "_" + filename
-
             profile_pic.save(os.path.join(app.config["UPLOAD_FOLDER"], pic_name))
             user.profile_pic = pic_name
             db.session.commit()
             # Save 'filename' to your database for the user's profile
 
     if form.validate_on_submit():
-        newsender = flask_login.current_user
         new_post = Post(
-            sender=newsender.id,
+            sender=current_user.id,
             receiver=user.id,
             body=form.body.data,
             timestamp=datetime.now(),
         )
         db.session.add(new_post)
         db.session.commit()
-        print(newsender.id)
+        print(current_user.id)
         print(new_post)
         print(form.body.data)
         return redirect(url_for("profile", username=user.username))
 
-    return render_template("profile.html", user=user, form=form, wishes=wishes, f=f)
+    return render_template("profile.html", user=user, form=form, wishes=wishes)
 
 
 @app.route("/upload-profile-pic", methods=["POST"])
