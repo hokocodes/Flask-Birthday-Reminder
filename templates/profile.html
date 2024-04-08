@@ -18,8 +18,8 @@
         <a href="{{ url_for('following', username=user.username) }}">Following</a><br>
         <a href="{{ url_for('followers', username=user.username) }}">Followers</a>
       </div>
-      <h1>{{ user.birthday }}</h1>
-      <h1>{{ user.username }}</h1>
+      <h1 class="userBday">{{ user.birthday }}</h1>
+      <h1 class="username">{{ user.username }}</h1>
 
       {% if current_user.is_authenticated %}
       {% if current_user.is_following(user) %}

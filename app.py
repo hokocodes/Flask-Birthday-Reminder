@@ -342,6 +342,35 @@ def search():
         return redirect(url_for('profile', username=user.username))
     else:
         return 'User not found', 404
+    
+@app.route('/bdaysfollowing')
+def bdaysfollowing():
+    user_id = flask_login.current_user.id
+    bday = Follow.query.filter_by(follower_id=user_id)
+    return render_template("birthdaysfollowing.html", bday=bday)
+
+@app.context_processor
+def base():
+    def notifbday():
+        user_id = flask_login.current_user.id
+        # Get the current date
+        current_date = datetime.now()
+        # Calculate the date one month earlier
+        one_month_earlier = current_date + relativedelta(months=1)
+
+        birthdays_in_last_month = User.query.join(
+            Follow, Follow.follower_id == user_id
+        ).filter(
+            
+            User.birthday >= current_date,
+            User.birthday <= one_month_earlier
+        ).all()
+
+
+        
+        return birthdays_in_last_month
+
+    return dict(notif=notifbday)
 
 if __name__ == "__main__":
     app.run(debug=True)

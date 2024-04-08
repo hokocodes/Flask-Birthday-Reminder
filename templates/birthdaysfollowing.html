@@ -1,0 +1,14 @@
+{% extends 'base.html' %} {% block content %}
+<section>
+  <h1>Birthdays You Follow</h1>
+  {% for b in bday %}
+  <div class="bdayfollowing">
+<a href="{{ url_for('profile', username=b.followed.username) }}">
+    {{ b.followed.username }}<br> {{ b.followed.birthday }}
+  </a>
+  </div>
+  <br>
+
+  {% endfor %}
+</section>
+{% endblock %}
