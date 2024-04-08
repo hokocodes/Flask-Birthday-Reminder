@@ -1,10 +1,10 @@
 {% extends 'base.html' %} {% block content %}
 <section>
     <h1>
-        {{ user.username }} Followers
+        {{ user.username }}'s Followers
     </h1>
     {% for f in followers %}
-    <a href="{{ url_for('profile', username=f.follower_id.username) }}">
+    <a href="{{ url_for('profile', username=f.followers.username) }}">
         {{ f.follower_id.username }}
       </a>
     {% endfor %}
