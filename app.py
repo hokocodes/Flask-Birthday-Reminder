@@ -103,12 +103,12 @@ class User(db.Model, UserMixin):
 
     def follow(self, user):
         if not self.is_following(user):
-            f = Follow(follower_id=self, followed_id=user)
+            f = Follow(follower_id=self.id, followed_id=user.id)
             db.session.add(f)
             return True
 
     def unfollow(self, user):
-        f = Follow.filter_by(followed_id=user.id).first()
+        f = Follow.query.filter_by(followed_id=user.id).first()
         if f:
             db.session.delete(f)
             return True
@@ -209,6 +209,8 @@ def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
     form = PostForm()
     wishes = Post.query.filter_by(receiver=user.id)
+    f = Follow.query.filter_by(follower_id=current_user.id)
+    
 
     if request.method == "POST":
         profile_pic = request.files["profile-pic"]
@@ -237,7 +239,7 @@ def profile(username):
         print(form.body.data)
         return redirect(url_for("profile", username=user.username))
 
-    return render_template("profile.html", user=user, form=form, wishes=wishes)
+    return render_template("profile.html", user=user, form=form, wishes=wishes, f=f)
 
 
 @app.route("/upload-profile-pic", methods=["POST"])
@@ -287,37 +289,50 @@ def register():
     return render_template("register.html", form=form)
 
 
-@app.route("/follow/<username>")
+@app.route("/follow/<username>", methods=['GET', 'POST'])
 @login_required
 def follow(username):
     user = User.query.filter_by(username=username).first()
     if user is None:
         flash("Invalid user.")
-        return redirect(url_for(".index"))
+        return redirect(url_for("profile", username=username))
     if current_user.is_following(user):
         flash("You are already following %s." % user.username)
-        return redirect(url_for(".user", username=username))
-    current_user.follow(user)
-    db.session.commit()
-    flash("You are now following %s." % user.username)
-    return redirect(url_for(".user", username=username))
+        return redirect(url_for("profile", username=username))
+    if request.method == 'POST':
+        current_user.follow(user)
+        db.session.commit()
+        flash("You are now following %s." % user.username)
+    return redirect(url_for("profile", username=username))
 
 
-@app.route("/unfollow/<username>")
+@app.route("/unfollow/<username>", methods=['GET', 'POST'])
 @login_required
 def unfollow(username):
     user = User.query.filter_by(username=username).first()
     if user is None:
         flash("Invalid user.")
-        return redirect(url_for("home"))
+        return redirect(url_for("profile", username=username))
     if not current_user.is_following(user):
         flash("You are not following %s." % user.username)
         return redirect(url_for("profile", username=username))
-    current_user.unfollow(user)
-    db.session.commit()
-    flash("You are no longer following %s." % user.username)
+    if request.method == 'POST':
+        current_user.unfollow(user)
+        db.session.commit()
+        flash("You are no longer following %s." % user.username)
     return redirect(url_for("profile", username=username))
 
+@app.route("/followers/<username>")
+def followers(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    followers = Follow.query.filter_by(followed_id=user.id).all()
+    return render_template("followers.html", followers=followers, user=user)
+
+@app.route("/following/<username>")
+def following(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    following = Follow.query.filter_by(follower_id=user.id).all()
+    return render_template("following.html", following=following, user=user)
 
 if __name__ == "__main__":
     app.run(debug=True)

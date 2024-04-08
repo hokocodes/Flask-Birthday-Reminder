@@ -16,11 +16,22 @@
     <div class="userinfo">
       <h1>{{ user.birthday }}</h1>
       <h1>{{ user.username }}</h1>
-      <input
-        type="button"
-        action="{{ url_for('follow', username=user.username) }}"
-        value="Follow"
-      />
+      <p>{{ f.follower_id }}</p>
+    
+      {% if current_user.is_following(user) %}
+      <form action="{{ url_for('unfollow', username=user.username) }}" method="post">
+        <input type="submit" value="Unfollow">
+      </form>
+      {% else %}
+      <form action="{{ url_for('follow', username=user.username) }}" method="post">
+        <input type="submit" value="Follow">
+      </form>
+      {% endif %}
+    </div>
+
+    <div class="follow">
+      <a href="{{ url_for('following', username=user.username) }}">Following</a>
+      <a href="{{ url_for('followers', username=user.username) }}">Followers</a>
     </div>
   </div>
 
