@@ -14,6 +14,10 @@
     </form>
 
     <div class="userinfo">
+      <div class="follow">
+        <a href="{{ url_for('following', username=user.username) }}">Following</a><br>
+        <a href="{{ url_for('followers', username=user.username) }}">Followers</a>
+      </div>
       <h1>{{ user.birthday }}</h1>
       <h1>{{ user.username }}</h1>
 
@@ -30,10 +34,7 @@
       {% endif %}
     </div>
 
-    <div class="follow">
-      <a href="{{ url_for('following', username=user.username) }}">Following</a>
-      <a href="{{ url_for('followers', username=user.username) }}">Followers</a>
-    </div>
+    
   </div>
 
   <div class="wishes">

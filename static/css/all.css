@@ -20,6 +20,10 @@ ul {
     display: inline-flex;
 }
 
+ul li {
+    margin: auto;
+}
+
 nav a {
     display: inline-flex;
     padding: 10px;
@@ -67,6 +71,7 @@ nav h1 {
     padding: 30px;
     border-radius: 10%;
     width: 250px;
+    margin: 10px;
 }
 
 section {
@@ -108,5 +113,14 @@ input {
 }
 
 .auth input {
+    margin: 10px;
+}
+
+nav form {
+    position: absolute;
+    right: 25%;
+}
+
+nav form input {
     margin: 10px;
 }

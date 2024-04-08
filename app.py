@@ -333,5 +333,15 @@ def following(username):
     following = Follow.query.filter_by(follower_id=user.id).all()
     return render_template("following.html", following=following, user=user)
 
+@app.route('/search')
+def search():
+    username = request.args.get('username')
+    # Your search logic here, for example:
+    user = User.query.filter_by(username=username).first()
+    if user:
+        return redirect(url_for('profile', username=user.username))
+    else:
+        return 'User not found', 404
+
 if __name__ == "__main__":
     app.run(debug=True)
