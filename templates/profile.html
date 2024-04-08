@@ -41,14 +41,15 @@
     <form action="" method="POST">
       {{ form.hidden_tag() }} {{ form.body }} {{ form.submit }}
     </form>
-    {% for w in wishes %}
-    <div>
-      <h6>{{ w.postsender.username }}</h6>
-      <p>{{ w.body }}</p>
-      <info>{{ w.timestamp }}</info>
-    </div>
-    {% endfor %}
+
   </div>
+  {% for w in wishes %}
+  <div class="wishes_messages">
+    <h2>{{ w.postsender.username }}</h2>
+    <p>{{ w.body }}</p>
+    <info>{{ w.timestamp }}</info>
+  </div>
+  {% endfor %}
 </section>
 
 <script>

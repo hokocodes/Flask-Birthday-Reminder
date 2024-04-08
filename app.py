@@ -213,8 +213,9 @@ def profile(username):
 
     
 
-    if request.method == "POST":
-        profile_pic = request.files["profile-pic"]
+    if request.method == "POST" or form.validate_on_submit():
+
+        profile_pic = request.files.get("profile-pic")
         # Handle file upload
         if profile_pic:
             filename = secure_filename(profile_pic.filename)
@@ -223,20 +224,19 @@ def profile(username):
             user.profile_pic = pic_name
             db.session.commit()
             # Save 'filename' to your database for the user's profile
-
-    if form.validate_on_submit():
-        new_post = Post(
-            sender=current_user.id,
-            receiver=user.id,
-            body=form.body.data,
-            timestamp=datetime.now(),
-        )
-        db.session.add(new_post)
-        db.session.commit()
-        print(current_user.id)
-        print(new_post)
-        print(form.body.data)
-        return redirect(url_for("profile", username=user.username))
+        else:
+            new_post = Post(
+                sender=current_user.id,
+                receiver=user.id,
+                body=form.body.data,
+                timestamp=datetime.now(),
+            )
+            db.session.add(new_post)
+            db.session.commit()
+            print(current_user.id)
+            print(new_post)
+            print(form.body.data)
+            return redirect(url_for("profile", username=user.username))
 
     return render_template("profile.html", user=user, form=form, wishes=wishes)
 
