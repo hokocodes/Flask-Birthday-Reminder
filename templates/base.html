@@ -4,7 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Birthday Wishes</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"
+    ></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -44,33 +48,30 @@
         class="logo"
         src="{{ url_for('static', filename='images/bday.jpg') }}"
       />
-
-      <div class="popup" id="myPopup" onclick="showPopup()">
-        <i
-          id="notif"
-          class="fa fa-bell"
-          style="font-size: 48px; color: red"
-        ></i>
-        <span class="popuptext">
-          {% for n in notif() %}
-          <div>
+      <div class="popup" id="myPopup">
+        <i id="notif" class="fa fa-bell" style="font-size: 48px; color: red"></i>
+        <div id="popuptext">
+          {% if notif() != None %} {% for n in notif() %}
+          <div class="notifmsgs">
             <p>
-              {{ n.username }}'s birthday is coming up on {{
-              n.birthday.strftime('%Y-%m-%d') }}
+              {{ n.username }}'s birthday is coming up on {{ n.birthday.strftime('%Y-%m-%d') }}
             </p>
+            
           </div>
-          {% endfor %}</span
-        >
+          {% endfor %}{% endif %}
+          <!-- <h1>LOLLOLOLOLOL</h1>  -->
+        </div>
       </div>
     </nav>
 
+
     {% block content %} {% endblock %}
     <script>
-
-      function showPopup() {
-        var popup = document.getElementById("myPopup");
-        popup.classList.toggle("show");
-      }
+      $(document).ready(function () {
+        $("#myPopup").click(function () { 
+          $("#popuptext").css("display", "contents");
+        });
+      });
     </script>
   </body>
 </html>

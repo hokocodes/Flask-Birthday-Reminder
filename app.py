@@ -352,23 +352,30 @@ def bdaysfollowing():
 @app.context_processor
 def base():
     def notifbday():
-        user_id = flask_login.current_user.id
-        # Get the current date
-        current_date = datetime.now()
-        # Calculate the date one month earlier
-        one_month_earlier = current_date + relativedelta(months=1)
+        if current_user.is_authenticated:
+            user_id = flask_login.current_user.id
+            # Get the current date
+            today = datetime.now()
+            # Calculate the date one month earlier
+            one = today + relativedelta(months=1)
+            print(one)
 
-        birthdays_in_last_month = User.query.join(
-            Follow, Follow.follower_id == user_id
-        ).filter(
+            birthdays_in_last_month = User.query.join(
+                Follow, User.id == Follow.follower_id
+            ).filter(
+                and_(
+                    (func.extract('month', User.birthday) >= today.month), 
+                    (func.extract('day', User.birthday) >= today.day),
+                ),
+                and_(
+                    (func.extract('month', User.birthday) <= one.month),
+                    (func.extract('day', User.birthday) <= one.day)
+                )
+            ).all()
+
+            print(birthdays_in_last_month)
             
-            User.birthday >= current_date,
-            User.birthday <= one_month_earlier
-        ).all()
-
-
-        
-        return birthdays_in_last_month
+            return birthdays_in_last_month
 
     return dict(notif=notifbday)
 
