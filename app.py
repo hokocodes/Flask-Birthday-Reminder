@@ -14,11 +14,10 @@ from sqlalchemy import func
 from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField
 from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
 from flask_bcrypt import Bcrypt
-from datetime import datetime
+from datetime import datetime, date
 import flask_login
 from sqlalchemy.orm import backref
 from dateutil.relativedelta import relativedelta
-from datetime import date
 import os
 from werkzeug.utils import secure_filename
 import uuid as uuid
@@ -357,20 +356,18 @@ def base():
             # Get the current date
             today = datetime.now()
             # Calculate the date one month earlier
-            one = today + relativedelta(months=1)
-            print(one)
+            one_month_later = today + relativedelta(months=1)
+            print(one_month_later)
+
+            currentyear = func.extract('year', today)
 
             birthdays_in_last_month = User.query.join(
                 Follow, User.id == Follow.follower_id
             ).filter(
-                and_(
-                    (func.extract('month', User.birthday) >= today.month), 
-                    (func.extract('day', User.birthday) >= today.day),
-                ),
-                and_(
-                    (func.extract('month', User.birthday) <= one.month),
-                    (func.extract('day', User.birthday) <= one.day)
-                )
+                    func.extract('month', User.birthday) <= one_month_later.month,
+                    func.extract('day', User.birthday) <= one_month_later.day,
+                    func.extract('month', User.birthday) >= today.month,
+                    func.extract('month', User.birthday) >= today.month
             ).all()
 
             print(birthdays_in_last_month)
