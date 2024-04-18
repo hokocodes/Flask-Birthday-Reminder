@@ -58,7 +58,6 @@ a:active {
 
 nav {
   display: inline-flex;
-  position: relative;
   width: 100%;
 }
 
@@ -162,22 +161,26 @@ nav form input {
 #popuptext {
   display: none;
   width: 160px;
-  background-color: #555;
   color: #000;
   text-align: center;
   border-radius: 6px;
   padding: 8px 0;
-  position: absolute;
   z-index: 1;
-  bottom: 125%;
-  left: 50%;
   margin-left: -80px;
+
 }
 
 .popup i {
-    position: absolute;
-    right: 0px;
-    top: 300px;
+  position: absolute;
+  right: 0;
+  top: -40px;
+}
+
+.popup {
+  position: absolute;
+  right: 0;
+  top: 300px;
+  z-index: 10;
 }
 
 .notifmsgs {
