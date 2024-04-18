@@ -184,11 +184,10 @@ nav form input {
 }
 
 .notifmsgs {
-    position: absolute;
-    top: 375px;
+    margin: 15px;
     background-color: #fa6da1;
     right: 0;
     border-radius: 7%;
-    padding: 0 20px 0 20px;
+    padding: 20px;
     color: white;
 }

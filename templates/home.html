@@ -1,5 +1,6 @@
 {% extends 'base.html' %} {% block content %}
 <section>
+  <h1>Hello, {{ current_user.username }}!</h1>
   {% if today|length >= 1 %}
   <h1>It's someone's birthday today!</h1>
   {% for t in today %}
