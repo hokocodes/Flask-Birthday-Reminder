@@ -39,17 +39,17 @@ The Birthday Base is an initiative that allows easier tracking of anyone's birth
 
 
 ## Set up
-Please install all the packages and libraries required.
+Please install all the packages and libraries required.<br>
 ```pip install -r requirements.txt```
 
 ## Run app
-Then, run the app.
+Then, run the app.<br>
 ```python app.py```
 
 Can register new users and see their birthdays.
 
 ## Testing Credentials
-username: janet
+username: janet<br>
 password: butter12
 
 [![Uses Git](https://forthebadge.com/images/badges/uses-git.svg)](https://github.com/vedant-jain03/HashHub) [![Uses HTML](https://forthebadge.com/images/badges/uses-html.svg)](https://github.com/vedant-jain03/HashHub) [![Uses CSS](https://forthebadge.com/images/badges/uses-css.svg)](https://github.com/vedant-jain03/HashHub) 
