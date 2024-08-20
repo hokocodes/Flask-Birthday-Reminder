@@ -15,7 +15,7 @@
 - **Frontend:** HTML, CSS, JavaScript
 - **Backend:** Python, SQLAlchemy
 - **Version Control:** Git and GitHub
-- **Hosting:** gh-pages(frontend), heroku(backend)
+- **Hosting:** Vercel
 - **Code Editor and tools**: VS Code
 
  <br />
